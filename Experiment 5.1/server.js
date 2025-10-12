@@ -1,88 +1,26 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const Product = require("./models/productModel");
+require('dotenv').config();
+const express = require('express');
+const connectDB = require('./config/db');
+const productRoutes = require('./routes/products');
 
 const app = express();
-const PORT = 3000;
-
-// Middleware
 app.use(express.json());
 
-// MongoDB connection
-mongoose
-  .connect("mongodb://127.0.0.1:27017/productDB")
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+// Basic health
+app.get('/', (req, res) => res.send('Product CRUD API is alive ✨'));
 
-// ================================
-// CRUD ROUTES
-// ================================
+// Mount routes
+app.use('/api/products', productRoutes);
 
-// CREATE a product
-app.post("/products", async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json({ message: "Product added successfully", product });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+// Error fallback
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ message: 'Something went wrong' });
 });
 
-// READ all products
-app.get("/products", async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/productdb';
 
-// READ a product by ID
-app.get("/products/:id", async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// UPDATE a product
-app.put("/products/:id", async (req, res) => {
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    if (!updatedProduct)
-      return res.status(404).json({ message: "Product not found" });
-    res.json({ message: "Product updated successfully", updatedProduct });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// DELETE a product
-app.delete("/products/:id", async (req, res) => {
-  try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct)
-      return res.status(404).json({ message: "Product not found" });
-    res.json({ message: "Product deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Root route
-app.get("/", (req, res) => {
-  res.send("🛒 Welcome to Product Management API");
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+connectDB(MONGODB_URI).then(() => {
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 });
