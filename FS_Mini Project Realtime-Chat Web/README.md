@@ -1,8 +1,8 @@
-# Realtime-Chat-App
+# Realtime-Chat-Web
 
-Realtime-Chat App is a platform where users can chat to each other in real-time.
+Realtime-Chat Web is a platform where users can chat to each other in real-time.
 
-Live Link: https://realtime-chat-app-gdsx.onrender.com
+Live Link: https://realtime-chat-Web-gdsx.onrender.com
 
 ## ✨ Features
 
@@ -58,7 +58,7 @@ To get a local copy up and running, follow these steps.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/dakshh0827/Realtime-Chat-App.git
+    git clone https://github.com/dakshh0827/Realtime-Chat-Web.git
     ```
 
 2.  **Install dependencies:**
