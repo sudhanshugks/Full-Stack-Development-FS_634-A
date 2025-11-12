@@ -1,4 +1,4 @@
-# Capstone Blog (simple demo)
+# Capstone Blog 
 
 ## Setup backend
 1. `cd backend`
